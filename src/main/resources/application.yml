@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: openai-plugin
+
+
+open-ai:
+  base-url: ${BASE_URL}
+  key: ${API_KEY}
+  simulate: true
