@@ -1,10 +1,8 @@
 package com.example.openaiplugin;
 
-import com.example.openaiplugin.controller.OpenAIController;
-import com.example.openaiplugin.service.OpenAIService;
-import com.example.openaiplugin.service.dto.BaseResponse;
-import com.example.openaiplugin.service.dto.OpenAIRequest;
-import com.example.openaiplugin.service.dto.OpenAIResponse;
+import com.example.openaiplugin.controller.OpenAiController;
+import com.example.openaiplugin.service.OpenAiService;
+import com.example.openaiplugin.service.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -22,28 +20,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(TestConfig.class)
-@WebMvcTest(OpenAIController.class)
-public class OpenAIServiceMvcTest {
+@WebMvcTest(OpenAiController.class)
+public class OpenAiServiceMvcTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-
     @Mock
-    private OpenAIService openAIService;
-
+    private OpenAiService openAIService;
 
     @Test
     public void testCompleting() throws Exception {
-        OpenAIRequest openAIRequest = generateMockRequest();
-        OpenAIResponse openAIResponse = generateMockResponse();
+        OpenAiRequest openAIRequest = generateMockRequest();
+        OpenAiResponse openAIResponse = generateMockResponse();
 
-        when(openAIService.sendOpenAI(openAIRequest)).thenReturn(new BaseResponse<>(openAIResponse));
-
+        when(openAIService.send(openAIRequest)).thenReturn(new BaseResponse<>(openAIResponse));
 
         String request = objectMapper.writeValueAsString(openAIRequest);
         String expectedResponse = objectMapper.writeValueAsString(new BaseResponse<>(openAIResponse));
-
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/open-ai/completing")
                         .content(request)
@@ -53,24 +47,23 @@ public class OpenAIServiceMvcTest {
 
     }
 
-
-    private OpenAIRequest generateMockRequest() {
-        OpenAIRequest request = new OpenAIRequest();
+    private OpenAiRequest generateMockRequest() {
+        OpenAiRequest request = new OpenAiRequest();
         request.setPrompt("test");
         request.setModel("gpt-3.5-turbo");
         request.setMaxTokens(4);
         return request;
     }
 
-    private OpenAIResponse generateMockResponse() {
-        return OpenAIResponse.builder()
+    private OpenAiResponse generateMockResponse() {
+        return OpenAiResponse.builder()
                 .id("cmpl-6dTsk4HDk4fjZy1QRXgA7MbL0Ljx5")
                 .object("text_completion")
                 .created(1677826800L)
                 .model("gpt-3.5-turbo")
                 .choices(List.of(
-                        OpenAIResponse.Choice.builder()
-                                .message(OpenAIResponse.Message.builder()
+                        Choice.builder()
+                                .message(Message.builder()
                                         .content("Test")
                                         .build())
                                 .index(0)

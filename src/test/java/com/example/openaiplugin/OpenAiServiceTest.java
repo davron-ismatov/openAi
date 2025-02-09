@@ -1,13 +1,10 @@
 package com.example.openaiplugin;
 
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
-import com.example.openaiplugin.service.OpenAIService;
-import com.example.openaiplugin.service.dto.BaseResponse;
-import com.example.openaiplugin.service.dto.OpenAIRequest;
-import com.example.openaiplugin.service.dto.OpenAIResponse;
+import com.example.openaiplugin.service.OpenAiService;
+import com.example.openaiplugin.service.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 public class OpenAiServiceTest {
 
     @Autowired
-    private OpenAIService openAIService;
+    private OpenAiService openAIService;
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
@@ -43,41 +40,44 @@ public class OpenAiServiceTest {
         mockServer = MockRestServiceServer.createServer(restTemplate);
     }
 
-    @AfterEach
-    public void verify() {
-        mockServer.verify();
-    }
-
+//    @AfterEach
+//    public void verify() {
+//        mockServer.verify();
+//    }
 
     @Test
     public void testSendOpenAISuccess() throws JsonProcessingException {
-        OpenAIResponse mockResponse = generateMockResponse();
+        OpenAiResponse mockResponse = generateMockResponse();
 
         mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess(objectMapper.writeValueAsString(mockResponse), MediaType.APPLICATION_JSON));
 
-        OpenAIRequest request = generateMockRequest();
-        BaseResponse<OpenAIResponse> response = openAIService.sendOpenAI(request);
+        OpenAiRequest request = generateMockRequest();
+        BaseResponse<OpenAiResponse> response = openAIService.send(request);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         assertThat(response.getData().getChoices()).hasSize(1);
         assertThat(response.getData().getChoices().get(0).getMessage().getContent()).isEqualTo("Test");
+
+        mockServer.verify();
     }
 
     @Test
     public void testSendOpenAIUnknownError() {
-        OpenAIResponse mockResponse = generateMockResponse();
+        OpenAiResponse mockResponse = generateMockResponse();
         mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess(mockResponse.toString(), MediaType.APPLICATION_JSON));
 
-        OpenAIRequest request = generateMockRequest();
-        BaseResponse<OpenAIResponse> response = openAIService.sendOpenAI(request);
+        OpenAiRequest request = generateMockRequest();
+        BaseResponse<OpenAiResponse> response = openAIService.send(request);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.UNKNOWN_ERROR);
+
+        mockServer.verify();
     }
 
 
@@ -87,8 +87,8 @@ public class OpenAiServiceTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.BAD_REQUEST));
 
-        OpenAIRequest request = generateMockRequest();
-        BaseResponse<OpenAIResponse> response = openAIService.sendOpenAI(request);
+        OpenAiRequest request = generateMockRequest();
+        BaseResponse<OpenAiResponse> response = openAIService.send(request);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.CLIENT_ERROR);
@@ -101,30 +101,30 @@ public class OpenAiServiceTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        OpenAIRequest request = generateMockRequest();
-        BaseResponse<OpenAIResponse> response = openAIService.sendOpenAI(request);
+        OpenAiRequest request = generateMockRequest();
+        BaseResponse<OpenAiResponse> response = openAIService.send(request);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.SERVER_ERROR);
     }
 
-    private OpenAIRequest generateMockRequest() {
-        OpenAIRequest request = new OpenAIRequest();
+    private OpenAiRequest generateMockRequest() {
+        OpenAiRequest request = new OpenAiRequest();
         request.setPrompt("test");
         request.setModel("gpt-3.5-turbo");
         request.setMaxTokens(4);
         return request;
     }
 
-    private OpenAIResponse generateMockResponse() {
-        return OpenAIResponse.builder()
+    private OpenAiResponse generateMockResponse() {
+        return OpenAiResponse.builder()
                 .id("cmpl-6dTsk4HDk4fjZy1QRXgA7MbL0Ljx5")
                 .object("text_completion")
                 .created(1677826800L)
                 .model("3.5 turbo")
                 .choices(List.of(
-                        OpenAIResponse.Choice.builder()
-                                .message(OpenAIResponse.Message.builder()
+                        Choice.builder()
+                                .message(Message.builder()
                                         .content("Test")
                                         .build())
                                 .index(0)

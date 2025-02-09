@@ -1,7 +1,7 @@
 package com.example.openaiplugin;
 
-import com.example.openaiplugin.service.OpenAIService;
-import com.example.openaiplugin.service.impl.SimOpenAIServiceImpl;
+import com.example.openaiplugin.service.OpenAiService;
+import com.example.openaiplugin.service.impl.SimOpenAiServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ public class TestConfig {
         return new ObjectMapper();
     }
     @Bean
-    public OpenAIService openAIService() {
-        return new SimOpenAIServiceImpl();
+    public OpenAiService openAIService() {
+        return new SimOpenAiServiceImpl();
     }
 }

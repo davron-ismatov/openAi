@@ -1,6 +1,5 @@
 package com.example.openaiplugin.config;
 
-import com.example.openaiplugin.config.props.OpenApiProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -15,11 +14,12 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(OpenApiProperties.class)
 @RequiredArgsConstructor
-public class RestTemplateConfig {
+@EnableConfigurationProperties(OpenAiProperties.class)
+public class OpenAiClientConfig {
+    private final OpenAiProperties openAiProperties;
 
-    @Bean
+    @Bean(name = "openAiRestTemplate")
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .messageConverters(createMessageConverters())
@@ -34,8 +34,8 @@ public class RestTemplateConfig {
     @Bean
     public ClientHttpRequestFactory clientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(10000);
-        factory.setReadTimeout(30000);
+        factory.setConnectTimeout(openAiProperties.getConnectionTimeout());
+        factory.setReadTimeout(openAiProperties.getReadTimeout());
         return factory;
     }
 }

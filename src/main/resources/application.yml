@@ -9,3 +9,5 @@ open-ai:
   base-url: ${BASE_URL}
   key: ${API_KEY}
   simulate: true
+  connection-timeout: 10000
+  read-timeout: 10000

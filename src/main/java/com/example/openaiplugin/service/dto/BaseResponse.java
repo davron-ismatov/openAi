@@ -21,8 +21,13 @@ public class BaseResponse<T> {
         this.status = ResponseStatus.SUCCESS;
     }
 
+    public BaseResponse(ResponseStatus status,String message) {
+        this(null, status);
+        this.message = message;
+    }
+
     public BaseResponse(ResponseStatus status) {
         this(null, status);
-        this.message = status.getValue();
+        this.message = status.getMessage().messageUz() + "\n" + status.getMessage().messageRu() + "\n" + status.getMessage().messageEn();
     }
 }
