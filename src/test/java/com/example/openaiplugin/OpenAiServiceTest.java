@@ -5,6 +5,7 @@ import com.example.openaiplugin.service.OpenAiService;
 import com.example.openaiplugin.service.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +41,13 @@ public class OpenAiServiceTest {
         mockServer = MockRestServiceServer.createServer(restTemplate);
     }
 
-//    @AfterEach
-//    public void verify() {
-//        mockServer.verify();
-//    }
+    @AfterEach
+    public void verify() {
+        mockServer.verify();
+    }
 
     @Test
-    public void testSendOpenAISuccess() throws JsonProcessingException {
+    public void test_send_open_ai_for_success_response() throws JsonProcessingException {
         OpenAiResponse mockResponse = generateMockResponse();
 
         mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
@@ -60,12 +61,22 @@ public class OpenAiServiceTest {
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
         assertThat(response.getData().getChoices()).hasSize(1);
         assertThat(response.getData().getChoices().get(0).getMessage().getContent()).isEqualTo("Test");
-
-        mockServer.verify();
     }
 
     @Test
-    public void testSendOpenAIUnknownError() {
+    public void test_send_open_ai_for_null_response() throws JsonProcessingException {
+        mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess(objectMapper.writeValueAsString(null), MediaType.APPLICATION_JSON));
+
+        OpenAiRequest request = generateMockRequest();
+        BaseResponse<OpenAiResponse> response = openAIService.send(request);
+
+        assertThat(response.getData()).isNull();
+    }
+
+    @Test
+    public void test_send_open_ai_for_response_unknown_error() {
         OpenAiResponse mockResponse = generateMockResponse();
         mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
                 .andExpect(method(HttpMethod.POST))
@@ -76,13 +87,11 @@ public class OpenAiServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.UNKNOWN_ERROR);
-
-        mockServer.verify();
     }
 
 
     @Test
-    public void testSendOpenAIClientError() throws JsonProcessingException {
+    public void test_send_open_ai_to_get_client_error_response() throws JsonProcessingException {
         mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.BAD_REQUEST));
@@ -96,7 +105,7 @@ public class OpenAiServiceTest {
 
 
     @Test
-    public void testSendOpenAIServerError() throws JsonProcessingException {
+    public void test_send_open_ai_to_get_server_error_response() throws JsonProcessingException {
         mockServer.expect(once(), requestTo("https://api.openai.com/v1/completions"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));

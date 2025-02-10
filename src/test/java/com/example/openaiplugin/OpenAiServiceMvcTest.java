@@ -30,7 +30,7 @@ public class OpenAiServiceMvcTest {
     private OpenAiService openAIService;
 
     @Test
-    public void testCompleting() throws Exception {
+    public void test_for_open_ai_completing_api_checking_controller_behaviour() throws Exception {
         OpenAiRequest openAIRequest = generateMockRequest();
         OpenAiResponse openAIResponse = generateMockResponse();
 
@@ -44,7 +44,6 @@ public class OpenAiServiceMvcTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponse));
-
     }
 
     private OpenAiRequest generateMockRequest() {
