@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OpenAiRequest {
+public class OpenAiRequestDTO {
     private String model;
     private String prompt;
     private Integer maxTokens;

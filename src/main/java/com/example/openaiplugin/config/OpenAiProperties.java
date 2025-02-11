@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "open-ai")
 public class OpenAiProperties {
     private String baseUrl;
-    private String key;
+    private String secretKey;
     private Integer connectionTimeout;
     private Integer readTimeout;
 }

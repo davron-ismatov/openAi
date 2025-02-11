@@ -1,7 +1,7 @@
 package com.example.openaiplugin.service;
 
-import com.example.openaiplugin.domain.enumeration.ResponseStatus;
+import com.example.openaiplugin.service.dto.ErrorRecordDTO;
 
 public interface ErrorRecordService {
-    void saveErrorRecord(String error, String occurredClass, String occurredMethod, ResponseStatus responseStatus);
+    void saveErrorRecord(ErrorRecordDTO dto);
 }

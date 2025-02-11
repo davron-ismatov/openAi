@@ -1,13 +1,11 @@
 package com.example.openaiplugin.service.impl;
 
 import com.example.openaiplugin.config.OpenAiProperties;
-import com.example.openaiplugin.domain.enumeration.ResponseStatus;
 import com.example.openaiplugin.service.ErrorRecordService;
 import com.example.openaiplugin.service.OpenAiService;
 import com.example.openaiplugin.service.dto.BaseResponse;
-import com.example.openaiplugin.service.dto.OpenAiRequest;
-import com.example.openaiplugin.service.dto.OpenAiResponse;
-import com.example.openaiplugin.service.repository.ErrorRecordRepository;
+import com.example.openaiplugin.service.dto.OpenAiRequestDTO;
+import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,8 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static com.example.openaiplugin.utils.ResponseUtils.validateResponse;
@@ -30,49 +26,24 @@ import static com.example.openaiplugin.utils.ResponseUtils.validateResponse;
 public class OpenAiServiceImpl implements OpenAiService {
     private final OpenAiProperties properties;
     private final RestTemplate restTemplate;
-    private final String OPEN_AI_COMPLETIONS = "/v1/completions";
-    private final ErrorRecordService errorRecordService;
+    private final String OPEN_AI_COMPLETIONS_URI = "/v1/completions";
 
     public OpenAiServiceImpl(OpenAiProperties properties, RestTemplate restTemplate, ErrorRecordService errorRecordService) {
-        this.errorRecordService = errorRecordService;
         log.debug("###OpenAiServiceImpl is started###");
         this.properties = properties;
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public BaseResponse<OpenAiResponse> send(OpenAiRequest openAIRequest) {
+    public BaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAiRequestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(properties.getKey());
-        HttpEntity<OpenAiRequest> entity = new HttpEntity<>(openAIRequest, headers);
+        headers.setBearerAuth(properties.getSecretKey());
+        HttpEntity<OpenAiRequestDTO> entity = new HttpEntity<>(openAiRequestDTO, headers);
 
-        try {
-            var response = restTemplate.exchange(properties.getBaseUrl() + OPEN_AI_COMPLETIONS, HttpMethod.POST, entity, new ParameterizedTypeReference<OpenAiResponse>() {
-            });
-
-            return validateResponse(response);
-        } catch (HttpClientErrorException clientErrorException) {
-            errorRecordService.saveErrorRecord(
-                    clientErrorException.getClass().getName(), OpenAiServiceImpl.class.getName(), "send",ResponseStatus.CLIENT_ERROR
-            );
-
-            return new BaseResponse<>(ResponseStatus.CLIENT_ERROR, clientErrorException.getResponseBodyAsString());
-        } catch (HttpServerErrorException serverErrorException) {
-            errorRecordService.saveErrorRecord(
-                    serverErrorException.getClass().getName(), OpenAiServiceImpl.class.getName(), "send",ResponseStatus.SERVER_ERROR
-            );
-
-            return new BaseResponse<>(ResponseStatus.SERVER_ERROR, serverErrorException.getResponseBodyAsString());
-        } catch (Exception e) {
-            errorRecordService.saveErrorRecord(
-                    e.getClass().getName(), OpenAiServiceImpl.class.getName(), "send",ResponseStatus.UNKNOWN_ERROR
-            );
-
-            return new BaseResponse<>(ResponseStatus.UNKNOWN_ERROR, e.getMessage());
-        }
+        var response = restTemplate.exchange(properties.getBaseUrl() + OPEN_AI_COMPLETIONS_URI, HttpMethod.POST, entity, new ParameterizedTypeReference<OpenAiResponseDTO>() {
+        });
+        return validateResponse(response);
     }
-
-
 
 }

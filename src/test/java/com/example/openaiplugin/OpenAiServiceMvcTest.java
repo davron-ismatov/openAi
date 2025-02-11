@@ -31,13 +31,13 @@ public class OpenAiServiceMvcTest {
 
     @Test
     public void test_for_open_ai_completing_api_checking_controller_behaviour() throws Exception {
-        OpenAiRequest openAIRequest = generateMockRequest();
-        OpenAiResponse openAIResponse = generateMockResponse();
+        OpenAiRequestDTO openAIRequestDTO = generateMockRequest();
+        OpenAiResponseDTO openAIResponseDTO = generateMockResponse();
 
-        when(openAIService.send(openAIRequest)).thenReturn(new BaseResponse<>(openAIResponse));
+        when(openAIService.send(openAIRequestDTO)).thenReturn(new BaseResponse<>(openAIResponseDTO));
 
-        String request = objectMapper.writeValueAsString(openAIRequest);
-        String expectedResponse = objectMapper.writeValueAsString(new BaseResponse<>(openAIResponse));
+        String request = objectMapper.writeValueAsString(openAIRequestDTO);
+        String expectedResponse = objectMapper.writeValueAsString(new BaseResponse<>(openAIResponseDTO));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/open-ai/completing")
                         .content(request)
@@ -46,16 +46,16 @@ public class OpenAiServiceMvcTest {
                 .andExpect(content().string(expectedResponse));
     }
 
-    private OpenAiRequest generateMockRequest() {
-        OpenAiRequest request = new OpenAiRequest();
+    private OpenAiRequestDTO generateMockRequest() {
+        OpenAiRequestDTO request = new OpenAiRequestDTO();
         request.setPrompt("test");
         request.setModel("gpt-3.5-turbo");
         request.setMaxTokens(4);
         return request;
     }
 
-    private OpenAiResponse generateMockResponse() {
-        return OpenAiResponse.builder()
+    private OpenAiResponseDTO generateMockResponse() {
+        return OpenAiResponseDTO.builder()
                 .id("cmpl-6dTsk4HDk4fjZy1QRXgA7MbL0Ljx5")
                 .object("text_completion")
                 .created(1677826800L)

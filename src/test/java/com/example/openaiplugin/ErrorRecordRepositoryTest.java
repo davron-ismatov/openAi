@@ -4,6 +4,7 @@ import com.example.openaiplugin.domain.entity.ErrorRecord;
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
 import com.example.openaiplugin.service.impl.OpenAiServiceImpl;
 import com.example.openaiplugin.service.repository.ErrorRecordRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,8 @@ public class ErrorRecordRepositoryTest {
         postgres = new PostgreSQLContainer<>("postgres:latest")
                 .withDatabaseName("openai_plugin")
                 .withUsername("postgres")
-                .withPassword("1234asdf");
+                .withPassword("1234asdf")
+                .withInitScript("error_record_repository_test.sql");
 
         postgres.start();
     }
@@ -37,6 +39,7 @@ public class ErrorRecordRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void test_error_record_saving() {
         ErrorRecord errorRecord = generateErrorRecord();
 
@@ -52,6 +55,7 @@ public class ErrorRecordRepositoryTest {
                 .service(OpenAiServiceImpl.class.getName())
                 .thrownMethod("send")
                 .responseStatus(ResponseStatus.UNKNOWN_ERROR)
+                .description("testing")
                 .build();
     }
 }

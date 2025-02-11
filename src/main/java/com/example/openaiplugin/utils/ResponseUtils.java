@@ -4,6 +4,8 @@ import com.example.openaiplugin.domain.enumeration.ResponseStatus;
 import com.example.openaiplugin.service.dto.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 @Slf4j
 public class ResponseUtils {
@@ -24,7 +26,17 @@ public class ResponseUtils {
             return new BaseResponse<>(responseEntity.getBody(), ResponseStatus.SUCCESS);
         }
 
-        return new BaseResponse<>(ResponseStatus.UNKNOWN_ERROR);
+        if (responseEntity.getStatusCode().is5xxServerError()) {
+            log.debug("Internal server error occurred: {}", responseEntity.getBody());
+            throw new HttpServerErrorException(responseEntity.getStatusCode());
+        }
+
+        if (responseEntity.getStatusCode().is4xxClientError()) {
+            log.debug("Client server error occurred: {}", responseEntity.getBody());
+            throw new HttpClientErrorException(responseEntity.getStatusCode());
+        }
+
+        throw new RuntimeException();
     }
 
 }

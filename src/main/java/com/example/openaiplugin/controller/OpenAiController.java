@@ -2,8 +2,8 @@ package com.example.openaiplugin.controller;
 
 import com.example.openaiplugin.service.OpenAiService;
 import com.example.openaiplugin.service.dto.BaseResponse;
-import com.example.openaiplugin.service.dto.OpenAiRequest;
-import com.example.openaiplugin.service.dto.OpenAiResponse;
+import com.example.openaiplugin.service.dto.OpenAiRequestDTO;
+import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/open-ai")
 public class OpenAiController {
-    private final OpenAiService openAIService;
+    private final OpenAiService openAiService;
 
     @PostMapping("/completing")
-    public BaseResponse<OpenAiResponse> completing(@RequestBody OpenAiRequest openAIRequest) {
-        log.info("Sending OpenAI request: {}", openAIRequest);
-        return openAIService.send(openAIRequest);
+    public BaseResponse<OpenAiResponseDTO> completing(@RequestBody OpenAiRequestDTO openAiRequestDTO) {
+        log.info("Sending OpenAI request: {}", openAiRequestDTO);
+        return openAiService.send(openAiRequestDTO);
     }
 
 }

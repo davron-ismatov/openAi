@@ -19,20 +19,20 @@ public class SimOpenAiServiceImpl implements OpenAiService {
     }
 
     @Override
-    public BaseResponse<OpenAiResponse> send(OpenAiRequest openAIRequest) {
-        OpenAiResponse openAIResponse = generateMockResponse(openAIRequest);
+    public BaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAIRequestDTO) {
+        OpenAiResponseDTO openAIResponseDTO = generateMockResponse(openAIRequestDTO);
 
-        log.debug("Generated mock response -> {}", openAIResponse);
+        log.debug("Generated mock response -> {}", openAIResponseDTO);
 
-        return new BaseResponse<>(openAIResponse, ResponseStatus.SUCCESS);
+        return new BaseResponse<>(openAIResponseDTO, ResponseStatus.SUCCESS);
     }
 
-    private OpenAiResponse generateMockResponse(OpenAiRequest openAIRequest) {
-        return OpenAiResponse.builder()
+    private OpenAiResponseDTO generateMockResponse(OpenAiRequestDTO openAIRequestDTO) {
+        return OpenAiResponseDTO.builder()
                 .id("cmpl-6dTsk4HDk4fjZy1QRXgA7MbL0Ljx5")
                 .object("text_completion")
                 .created(1677826800L)
-                .model(openAIRequest.getModel())
+                .model(openAIRequestDTO.getModel())
                 .choices(List.of(
                         Choice.builder()
                                 .message(Message.builder()

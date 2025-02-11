@@ -1,9 +1,9 @@
 package com.example.openaiplugin.service;
 
 import com.example.openaiplugin.service.dto.BaseResponse;
-import com.example.openaiplugin.service.dto.OpenAiRequest;
-import com.example.openaiplugin.service.dto.OpenAiResponse;
+import com.example.openaiplugin.service.dto.OpenAiRequestDTO;
+import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 
 public interface OpenAiService {
-    BaseResponse<OpenAiResponse> send(OpenAiRequest openAIRequest);
+    BaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAIRequestDTO);
 }

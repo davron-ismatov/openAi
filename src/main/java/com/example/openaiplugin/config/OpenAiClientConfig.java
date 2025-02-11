@@ -13,16 +13,19 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+import static com.example.openaiplugin.constants.Constants.OPEN_AI_REST_TEMPLATE;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(OpenAiProperties.class)
 public class OpenAiClientConfig {
     private final OpenAiProperties openAiProperties;
 
-    @Bean(name = "openAiRestTemplate")
+    @Bean(name = OPEN_AI_REST_TEMPLATE)
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .messageConverters(createMessageConverters())
+                .requestFactory(this::clientHttpRequestFactory)
                 .build();
     }
 
@@ -31,7 +34,6 @@ public class OpenAiClientConfig {
         return List.of(jsonMessageConverter);
     }
 
-    @Bean
     public ClientHttpRequestFactory clientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(openAiProperties.getConnectionTimeout());

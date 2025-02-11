@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 @ToString
-public class OpenAiResponse {
+public class OpenAiResponseDTO {
     private String id;
     private String object;
     private Long created;
