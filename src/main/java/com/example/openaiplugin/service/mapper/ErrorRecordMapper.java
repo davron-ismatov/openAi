@@ -8,6 +8,9 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ErrorRecordMapper {
-    @Mapping(target = "error",source = "dto.error")
+    @Mapping(target = "error", source = "error")
     ErrorRecord toEntity(ErrorRecordDTO dto);
+
+    @Mapping(target = "id", source = "id")
+    ErrorRecordDTO toDto(ErrorRecord entity);
 }

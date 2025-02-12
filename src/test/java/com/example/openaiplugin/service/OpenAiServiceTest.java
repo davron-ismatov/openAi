@@ -1,7 +1,6 @@
-package com.example.openaiplugin;
+package com.example.openaiplugin.service;
 
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
-import com.example.openaiplugin.service.OpenAiService;
 import com.example.openaiplugin.service.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -31,6 +31,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 public class OpenAiServiceTest {
 
     @Autowired
+    @Qualifier("openAiServiceImpl")
     private OpenAiService openAiService;
     @Autowired
     private RestTemplate restTemplate;
@@ -57,7 +58,7 @@ public class OpenAiServiceTest {
                 .andRespond(withSuccess(objectMapper.writeValueAsString(mockResponse), MediaType.APPLICATION_JSON));
 
         OpenAiRequestDTO request = generateMockRequest();
-        BaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
+        OpenAiBaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.SUCCESS);
@@ -72,7 +73,7 @@ public class OpenAiServiceTest {
                 .andRespond(withSuccess(objectMapper.writeValueAsString(null), MediaType.APPLICATION_JSON));
 
         OpenAiRequestDTO request = generateMockRequest();
-        BaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
+        OpenAiBaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
 
         assertThat(response.getData()).isNull();
     }
@@ -87,7 +88,7 @@ public class OpenAiServiceTest {
         OpenAiRequestDTO request = generateMockRequest();
 
         assertThrows(Exception.class, () -> {
-            BaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
+            OpenAiBaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
             assertThat(response).isNotNull();
             assertThat(response.getStatus()).isEqualTo(ResponseStatus.UNKNOWN_ERROR);
         });
@@ -103,7 +104,7 @@ public class OpenAiServiceTest {
         OpenAiRequestDTO request = generateMockRequest();
 
         assertThrows(HttpClientErrorException.class, () -> {
-            BaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
+            OpenAiBaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
             assertThat(response).isNotNull();
             assertThat(response.getStatus()).isEqualTo(ResponseStatus.CLIENT_ERROR);
         });
@@ -119,7 +120,7 @@ public class OpenAiServiceTest {
         OpenAiRequestDTO request = generateMockRequest();
 
         assertThrows(HttpServerErrorException.class, () -> {
-            BaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
+            OpenAiBaseResponse<OpenAiResponseDTO> response = openAiService.send(request);
             assertThat(response).isNotNull();
             assertThat(response.getStatus()).isEqualTo(ResponseStatus.SERVER_ERROR);
         });
@@ -149,5 +150,4 @@ public class OpenAiServiceTest {
                 ))
                 .build();
     }
-
 }

@@ -4,9 +4,13 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Constants {
-    //TABLE NAMES
+    /**
+     * These constants represent table names
+     */
     public static final String ERROR_RECORD = "error_record";
 
-    // BEAN NAMES
+    /**
+     * These constants represent bean names
+     */
     public static final String OPEN_AI_REST_TEMPLATE = "openAiRestTemplate";
 }

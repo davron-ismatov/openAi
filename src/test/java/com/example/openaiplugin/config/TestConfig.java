@@ -1,4 +1,4 @@
-package com.example.openaiplugin;
+package com.example.openaiplugin.config;
 
 import com.example.openaiplugin.service.OpenAiService;
 import com.example.openaiplugin.service.impl.SimOpenAiServiceImpl;
@@ -13,8 +13,9 @@ public class TestConfig {
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
-    @Bean
-    public OpenAiService openAIService() {
+
+    @Bean("mockOpenAiService")
+    public OpenAiService openAiService() {
         return new SimOpenAiServiceImpl();
     }
 }

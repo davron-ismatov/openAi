@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public  class CompletionTokensDetails {
+public class CompletionTokensDetails {
     private Integer reasoningTokens;
     private Integer acceptedPredictionTokens;
     private Integer rejectedPredictionTokens;

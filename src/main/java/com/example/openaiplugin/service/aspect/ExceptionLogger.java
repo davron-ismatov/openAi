@@ -2,8 +2,8 @@ package com.example.openaiplugin.service.aspect;
 
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
 import com.example.openaiplugin.service.ErrorRecordService;
-import com.example.openaiplugin.service.dto.BaseResponse;
 import com.example.openaiplugin.service.dto.ErrorRecordDTO;
+import com.example.openaiplugin.service.dto.OpenAiBaseResponse;
 import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 import com.example.openaiplugin.service.impl.OpenAiServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,11 @@ public class ExceptionLogger {
     private final ErrorRecordService errorRecordService;
 
     @AfterThrowing(
-            value = "execution(public com.example.openaiplugin.service.dto.BaseResponse<com.example.openaiplugin.service.dto.OpenAiResponseDTO> com.example.openaiplugin.service.impl.OpenAiServiceImpl.send(com.example.openaiplugin.service.dto.OpenAiRequestDTO))",
+            value = "execution(public com.example.openaiplugin.service.dto.OpenAiBaseResponse<com.example.openaiplugin.service.dto.OpenAiResponseDTO> com.example.openaiplugin.service.impl.OpenAiServiceImpl.send(com.example.openaiplugin.service.dto.OpenAiRequestDTO))",
             throwing = "ex"
     )
-    public BaseResponse<OpenAiResponseDTO> afterThrowing(Exception ex) {
-        ErrorRecordDTO dto  = ErrorRecordDTO.builder()
+    public OpenAiBaseResponse<OpenAiResponseDTO> afterThrowing(Exception ex) {
+        ErrorRecordDTO dto = ErrorRecordDTO.builder()
                 .description(ex.getMessage())
                 .thrownMethod("send")
                 .service(OpenAiServiceImpl.class.getName())
@@ -34,7 +34,7 @@ public class ExceptionLogger {
 
         log.info("Exception occurred -> {}", ex.getMessage());
 
-        if (ex instanceof HttpClientErrorException clientErrorException){
+        if (ex instanceof HttpClientErrorException clientErrorException) {
             dto.setResponseStatus(ResponseStatus.CLIENT_ERROR);
             dto.setError(clientErrorException.getClass().getName());
             throw clientErrorException;
@@ -47,8 +47,9 @@ public class ExceptionLogger {
         }
 
         dto.setDescription(ex.getMessage());
+        log.info("Handled Exception dto: {}", dto);
         errorRecordService.saveErrorRecord(dto);
 
-        return new BaseResponse<>(dto.getResponseStatus(), ex.getMessage());
+        return new OpenAiBaseResponse<>(dto.getResponseStatus(), ex.getMessage());
     }
 }

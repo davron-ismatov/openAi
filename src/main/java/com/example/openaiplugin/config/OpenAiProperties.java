@@ -11,5 +11,6 @@ public class OpenAiProperties {
     private String baseUrl;
     private String secretKey;
     private Integer connectionTimeout;
+    private Boolean simulate;
     private Integer readTimeout;
 }

@@ -1,6 +1,6 @@
-package com.example.openaiplugin;
+package com.example.openaiplugin.controller;
 
-import com.example.openaiplugin.controller.OpenAiController;
+import com.example.openaiplugin.config.TestConfig;
 import com.example.openaiplugin.service.OpenAiService;
 import com.example.openaiplugin.service.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,17 +27,17 @@ public class OpenAiServiceMvcTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Mock
-    private OpenAiService openAIService;
+    private OpenAiService openAiService;
 
     @Test
     public void test_for_open_ai_completing_api_checking_controller_behaviour() throws Exception {
-        OpenAiRequestDTO openAIRequestDTO = generateMockRequest();
-        OpenAiResponseDTO openAIResponseDTO = generateMockResponse();
+        OpenAiRequestDTO openAiRequestDTO = generateMockRequest();
+        OpenAiResponseDTO openAiResponseDTO = generateMockResponse();
 
-        when(openAIService.send(openAIRequestDTO)).thenReturn(new BaseResponse<>(openAIResponseDTO));
+        when(openAiService.send(openAiRequestDTO)).thenReturn(new OpenAiBaseResponse<>(openAiResponseDTO));
 
-        String request = objectMapper.writeValueAsString(openAIRequestDTO);
-        String expectedResponse = objectMapper.writeValueAsString(new BaseResponse<>(openAIResponseDTO));
+        String request = objectMapper.writeValueAsString(openAiRequestDTO);
+        String expectedResponse = objectMapper.writeValueAsString(new OpenAiBaseResponse<>(openAiResponseDTO));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/open-ai/completing")
                         .content(request)

@@ -1,7 +1,7 @@
 package com.example.openaiplugin.controller;
 
 import com.example.openaiplugin.service.OpenAiService;
-import com.example.openaiplugin.service.dto.BaseResponse;
+import com.example.openaiplugin.service.dto.OpenAiBaseResponse;
 import com.example.openaiplugin.service.dto.OpenAiRequestDTO;
 import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class OpenAiController {
     private final OpenAiService openAiService;
 
     @PostMapping("/completing")
-    public BaseResponse<OpenAiResponseDTO> completing(@RequestBody OpenAiRequestDTO openAiRequestDTO) {
+    public OpenAiBaseResponse<OpenAiResponseDTO> completing(@RequestBody OpenAiRequestDTO openAiRequestDTO) {
         log.info("Sending OpenAI request: {}", openAiRequestDTO);
         return openAiService.send(openAiRequestDTO);
     }

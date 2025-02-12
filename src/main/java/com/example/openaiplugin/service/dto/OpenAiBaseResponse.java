@@ -6,27 +6,27 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class BaseResponse<T> {
+public class OpenAiBaseResponse<T> {
     private T data;
     private ResponseStatus status;
     private String message;
 
-    public BaseResponse(T data, ResponseStatus status) {
+    public OpenAiBaseResponse(T data, ResponseStatus status) {
         this.data = data;
         this.status = status;
     }
 
-    public BaseResponse(T data) {
+    public OpenAiBaseResponse(T data) {
         this.data = data;
         this.status = ResponseStatus.SUCCESS;
     }
 
-    public BaseResponse(ResponseStatus status,String message) {
+    public OpenAiBaseResponse(ResponseStatus status, String message) {
         this(null, status);
         this.message = message;
     }
 
-    public BaseResponse(ResponseStatus status) {
+    public OpenAiBaseResponse(ResponseStatus status) {
         this(null, status);
         this.message = status.getMessage().messageUz() + "\n" + status.getMessage().messageRu() + "\n" + status.getMessage().messageEn();
     }

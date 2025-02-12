@@ -1,0 +1,24 @@
+<configuration>
+    <conversionRule conversionWord="maskAuthorization"
+                    converterClass="com.example.openaiplugin.utils.OpenAiLoggingConverter"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <logger name="com.example.openaiplugin" level="INFO" additivity="false">
+        <appender-ref ref="OPENAI_CONSOLE"/>
+    </logger>
+
+    <appender name="OPENAI_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %maskAuthorization%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+</configuration>

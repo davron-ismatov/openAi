@@ -1,4 +1,4 @@
-package com.example.openaiplugin;
+package com.example.openaiplugin.repository;
 
 import com.example.openaiplugin.domain.entity.ErrorRecord;
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
@@ -26,8 +26,8 @@ public class ErrorRecordRepositoryTest {
     public static void set_up() {
         postgres = new PostgreSQLContainer<>("postgres:latest")
                 .withDatabaseName("openai_plugin")
-                .withUsername("postgres")
-                .withPassword("1234asdf")
+                .withUsername("openai")
+                .withPassword("openai")
                 .withInitScript("error_record_repository_test.sql");
 
         postgres.start();

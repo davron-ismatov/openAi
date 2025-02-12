@@ -1,7 +1,7 @@
 package com.example.openaiplugin.utils;
 
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
-import com.example.openaiplugin.service.dto.BaseResponse;
+import com.example.openaiplugin.service.dto.OpenAiBaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
@@ -10,20 +10,20 @@ import org.springframework.web.client.HttpServerErrorException;
 @Slf4j
 public class ResponseUtils {
 
-    public static <T> BaseResponse<T> validateResponse(ResponseEntity<T> responseEntity) {
-        if (responseEntity==null){
+    public static <T> OpenAiBaseResponse<T> validateResponse(ResponseEntity<T> responseEntity) {
+        if (responseEntity == null) {
             log.debug("Response is null");
-            return new BaseResponse<>(ResponseStatus.RESPONSE_IS_NULL);
+            return new OpenAiBaseResponse<>(ResponseStatus.RESPONSE_IS_NULL);
         }
 
-        if (responseEntity.getBody()==null){
+        if (responseEntity.getBody() == null) {
             log.debug("Response body is null");
-            return new BaseResponse<>(ResponseStatus.RESPONSE_BODY_IS_NULL);
+            return new OpenAiBaseResponse<>(ResponseStatus.RESPONSE_BODY_IS_NULL);
         }
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             log.debug("Response : {}", responseEntity.getBody());
-            return new BaseResponse<>(responseEntity.getBody(), ResponseStatus.SUCCESS);
+            return new OpenAiBaseResponse<>(responseEntity.getBody(), ResponseStatus.SUCCESS);
         }
 
         if (responseEntity.getStatusCode().is5xxServerError()) {
@@ -38,5 +38,4 @@ public class ResponseUtils {
 
         throw new RuntimeException();
     }
-
 }

@@ -1,7 +1,7 @@
 package com.example.openaiplugin.handler;
 
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
-import com.example.openaiplugin.service.dto.BaseResponse;
+import com.example.openaiplugin.service.dto.OpenAiBaseResponse;
 import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,21 +17,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public BaseResponse<OpenAiResponseDTO> handleHttpClientErrorException(HttpClientErrorException e) {
+    public OpenAiBaseResponse<OpenAiResponseDTO> handleHttpClientErrorException(HttpClientErrorException e) {
         log.info("Exception handled by HttpClientErrorException");
-        return new BaseResponse<>(ResponseStatus.CLIENT_ERROR, e.getMessage());
+        return new OpenAiBaseResponse<>(ResponseStatus.CLIENT_ERROR, e.getMessage());
     }
 
     @ExceptionHandler(HttpServerErrorException.class)
-    public BaseResponse<OpenAiResponseDTO> handleHttpServerErrorException(HttpServerErrorException e) {
+    public OpenAiBaseResponse<OpenAiResponseDTO> handleHttpServerErrorException(HttpServerErrorException e) {
         log.info("Exception handled by HttpServerErrorException");
-        return new BaseResponse<>(ResponseStatus.SERVER_ERROR, e.getMessage());
+        return new OpenAiBaseResponse<>(ResponseStatus.SERVER_ERROR, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public BaseResponse<OpenAiResponseDTO> handleException(Exception e) {
+    public OpenAiBaseResponse<OpenAiResponseDTO> handleException(Exception e) {
         log.info("Exception handled by Exception");
-        return new BaseResponse<>(ResponseStatus.UNKNOWN_ERROR, e.getMessage());
+        return new OpenAiBaseResponse<>(ResponseStatus.UNKNOWN_ERROR, e.getMessage());
     }
-
 }

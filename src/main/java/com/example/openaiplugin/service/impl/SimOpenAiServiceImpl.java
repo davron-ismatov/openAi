@@ -19,12 +19,12 @@ public class SimOpenAiServiceImpl implements OpenAiService {
     }
 
     @Override
-    public BaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAIRequestDTO) {
+    public OpenAiBaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAIRequestDTO) {
         OpenAiResponseDTO openAIResponseDTO = generateMockResponse(openAIRequestDTO);
 
         log.debug("Generated mock response -> {}", openAIResponseDTO);
 
-        return new BaseResponse<>(openAIResponseDTO, ResponseStatus.SUCCESS);
+        return new OpenAiBaseResponse<>(openAIResponseDTO, ResponseStatus.SUCCESS);
     }
 
     private OpenAiResponseDTO generateMockResponse(OpenAiRequestDTO openAIRequestDTO) {

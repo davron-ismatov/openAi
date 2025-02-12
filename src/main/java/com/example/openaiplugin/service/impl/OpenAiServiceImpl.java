@@ -1,9 +1,8 @@
 package com.example.openaiplugin.service.impl;
 
 import com.example.openaiplugin.config.OpenAiProperties;
-import com.example.openaiplugin.service.ErrorRecordService;
 import com.example.openaiplugin.service.OpenAiService;
-import com.example.openaiplugin.service.dto.BaseResponse;
+import com.example.openaiplugin.service.dto.OpenAiBaseResponse;
 import com.example.openaiplugin.service.dto.OpenAiRequestDTO;
 import com.example.openaiplugin.service.dto.OpenAiResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -28,22 +27,24 @@ public class OpenAiServiceImpl implements OpenAiService {
     private final RestTemplate restTemplate;
     private final String OPEN_AI_COMPLETIONS_URI = "/v1/completions";
 
-    public OpenAiServiceImpl(OpenAiProperties properties, RestTemplate restTemplate, ErrorRecordService errorRecordService) {
+    public OpenAiServiceImpl(OpenAiProperties properties, RestTemplate restTemplate) {
         log.debug("###OpenAiServiceImpl is started###");
         this.properties = properties;
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public BaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAiRequestDTO) {
+    public OpenAiBaseResponse<OpenAiResponseDTO> send(OpenAiRequestDTO openAiRequestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(properties.getSecretKey());
         HttpEntity<OpenAiRequestDTO> entity = new HttpEntity<>(openAiRequestDTO, headers);
 
-        var response = restTemplate.exchange(properties.getBaseUrl() + OPEN_AI_COMPLETIONS_URI, HttpMethod.POST, entity, new ParameterizedTypeReference<OpenAiResponseDTO>() {
+        log.info("Sending request to OpenAi: {}", entity);
+        var response = restTemplate.exchange(properties.getBaseUrl() + OPEN_AI_COMPLETIONS_URI,
+                HttpMethod.POST, entity, new ParameterizedTypeReference<OpenAiResponseDTO>() {
         });
+
         return validateResponse(response);
     }
-
 }

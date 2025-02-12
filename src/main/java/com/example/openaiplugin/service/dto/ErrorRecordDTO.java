@@ -3,9 +3,10 @@ package com.example.openaiplugin.service.dto;
 import com.example.openaiplugin.domain.enumeration.ResponseStatus;
 import lombok.*;
 
-@Builder
 @Getter
 @Setter
+@Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class ErrorRecordDTO {
