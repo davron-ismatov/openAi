@@ -36,7 +36,6 @@ public class ErrorRecordRepositoryTest {
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
     }
 
-
     @Test
     @Transactional
     public void test_error_record_saving() {
